@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill PDF Form and Preview</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            width: 48%; /* Left side: Form */
+        }
+
+        .preview-container {
+            width: 48%; /* Right side: Preview */
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .form-section h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .input-container {
+            width: 23%; /* Four columns */
+            margin-bottom: 10px;
+        }
+
+        .input-container label {
+            font-size: 12px;
+            color: #555;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .input-container input,
+        .input-container select {
+            width: 100%;
+            padding: 5px;
+            font-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .input-container input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+        }
+
+        #pdf-preview {
+            width: 100%;
+            height: 100vh;
+            border: 1px solid #ccc;
+            margin-top: 1px;
+        }
+
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-container button {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+        }
+
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .upload-container {
+            margin-top: 20px;
+        }
+
+        .upload-container h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        h3 {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Left-side form for data entry -->
+    <div class="form-container">
+        <h3>Fill PDF Form</h3>
+
+        <!-- HTML Form for Data Entry -->
+        <form id="pdfForm">
+            <!-- Personal Information Section -->
+            <div class="form-section">
+                <h4>Section 1. Employee Information and Attestation</h4>
+                <div class="form-row">
+                    <div class="input-container">
+                        <label for="lastName">Last Name (Family Name)</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="firstName">First Name (Given Name)</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="middleInitial">Middle Initial</label>
+                        <input type="text" id="middleInitial" name="middleInitial">
+                    </div>
+                    <div class="input-container">
+                        <label for="otherLastNames">Other Last Names Used</label>
+                        <input type="text" id="otherLastNames" name="otherLastNames">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-container">
+                        <label for="streetAddress">Street Number and Name</label>
+                        <input type="text" id="streetAddress" name="streetAddress" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="aptNumber">Apt. Number</label>
+                        <input type="text" id="aptNumber" name="aptNumber">
+                    </div>
+                    <div class="input-container">
+                        <label for="city">City or Town</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="state">State</label>
+                        <input type="text" id="state" name="state" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-container">
+                        <label for="zipCode">ZIP Code</label>
+                        <input type="text" id="zipCode" name="zipCode" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="dob">Date of Birth (mm/dd/yyyy)</label>
+                        <input type="text" id="dob" name="dob" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="ssn">Social Security Number</label>
+                        <input type="text" id="ssn" name="ssn" required>
+                    </div>
+                    <div class="input-container">
+                        <!-- Empty column for alignment -->
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-container">
+                        <label for="email">Employee's E-mail Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="phone">Employee's Phone Number</label>
+                        <input type="text" id="phone" name="phone" required>
+                    </div>
+                    <div class="input-container">
+                        <!-- Empty column for alignment -->
+                    </div>
+                    <div class="input-container">
+                        <!-- Empty column for alignment -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Citizenship Section -->
+            <div class="form-section">
+                <h4>Citizenship</h4>
+
+                <div class="form-row">
+                    <div class="input-container">
+                        <label>
+                            <input type="radio" id="citizen" name="citizenship" value="citizen">
+                            1. A citizen of the United States
+                        </label>
+                    </div>
+                    <div class="input-container">
+                        <label>
+                            <input type="radio" id="nonCitizenNational" name="citizenship" value="nonCitizenNational">
+                            2. A noncitizen national of the U.S.
+                        </label>
+                    </div>
+                    <div class="input-container">
+                        <label>
+                            <input type="radio" id="lawfulPermanentResident" name="citizenship" value="lawfulPermanentResident">
+                            3. A lawful permanent resident
+                        </label>
+                    </div>
+                    <div class="input-container">
+                        <label>
+                            <input type="radio" id="alienAuthorized" name="citizenship" value="alienAuthorized">
+                            4. An alien authorized to work until
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-container">
+                        <!-- Empty column for alignment -->
+                    </div>
+                    <div class="input-container">
+                        <!-- Empty column for alignment -->
+                    </div>
+                    <div class="input-container">
+                        <label for="alienRegistrationNumber">Alien Registration Number</label>
+                        <input type="text" id="alienRegistrationNumber" name="alienRegistrationNumber">
+                    </div>
+                    <div class="input-container">
+                        <label for="alienExpirationDate">Exp.Date (mm/dd/yyyy)</label>
+                        <input type="text" id="alienExpirationDate" name="alienExpirationDate">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signature Section -->
+            <div class="form-section">
+                <h4>Signature</h4>
+                <div class="form-row">
+                    <div class="input-container">
+                        <label for="signature">Signature of Employee</label>
+                        <input type="text" id="signature" name="signature" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="signatureDate">Today's Date (mm/dd/yyyy)</label>
+                        <input type="text" id="signatureDate" name="signatureDate" required>
+                    </div>
+                    <div class="input-container">
+                        <!-- Empty column for alignment -->
+                    </div>
+                    <div class="input-container">
+                        <!-- Empty column for alignment -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-container">
+                <button type="button" onclick="generateAndPreviewPDF()">Fill/Preview</button>
+                <button type="button" onclick="savePDF()">Save</button>
+                <button type="button" onclick="printPDF()">Print</button>
+            </div>
+
+
+
+
+
+            <!-- File Upload for PDF -->
+            <div class="upload-container">
+                <h4>Upload PDF</h4>
+                <input type="file" id="fileInput" accept="application/pdf" onchange="previewPDF(event)" />
+            </div>
+        </form>
+    </div>
+
+    <!-- Right-side preview window -->
+    <div class="preview-container">
+        <h3>PDF Preview</h3>
+        <iframe id="pdf-preview" src="about:blank"></iframe>
+    </div>
+
+    <!-- Include pdf-lib library -->
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+
+    <script>
+        let existingPdfBytes = null;
+        let filledPdfBytes = null;
+
+        // Function to preview PDF after file upload
+        async function previewPDF(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                alert("Please select a PDF file.");
+                return;
+            }
+
+            const fileReader = new FileReader();
+            fileReader.onload = async function() {
+                try {
+                    const typedArray = new Uint8Array(this.result);
+                    existingPdfBytes = typedArray;
+
+                    // Save the PDF to localStorage
+                    localStorage.setItem('savedPdf', JSON.stringify(Array.from(typedArray)));
+
+                    // Display the PDF in the iframe
+                    const blob = new Blob([typedArray], { type: 'application/pdf' });
+                    const pdfUrl = URL.createObjectURL(blob);
+                    document.getElementById('pdf-preview').src = pdfUrl;
+                } catch (error) {
+                    console.error("Error loading PDF:", error);
+                    alert("Failed to load PDF. Please ensure it is a valid PDF file.");
+                }
+            };
+
+            fileReader.readAsArrayBuffer(file);
+        }
+
+        // Function to load PDF from localStorage
+        function loadPDFFromLocalStorage() {
+            const savedPdf = localStorage.getItem('savedPdf');
+            if (savedPdf) {
+                try {
+                    const typedArray = new Uint8Array(JSON.parse(savedPdf));
+                    existingPdfBytes = typedArray;
+
+                    // Display the PDF in the iframe
+                    const blob = new Blob([typedArray], { type: 'application/pdf' });
+                    const pdfUrl = URL.createObjectURL(blob);
+                    document.getElementById('pdf-preview').src = pdfUrl;
+                } catch (error) {
+                    console.error("Error loading PDF from localStorage:", error);
+                }
+            }
+        }
+
+async function generateAndPreviewPDF() {
+    const lastName = document.getElementById('lastName').value;
+    const firstName = document.getElementById('firstName').value;
+    const middleInitial = document.getElementById('middleInitial').value;
+    const otherLastNames = document.getElementById('otherLastNames').value;
+    const streetAddress = document.getElementById('streetAddress').value;
+    const aptNumber = document.getElementById('aptNumber').value;
+    const city = document.getElementById('city').value;
+    const state = document.getElementById('state').value;
+    const zipCode = document.getElementById('zipCode').value;
+    const dob = document.getElementById('dob').value;
+    const ssn = document.getElementById('ssn').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const citizenship = document.querySelector('input[name="citizenship"]:checked')?.value || '';
+    const alienExpirationDate = document.getElementById('alienExpirationDate').value;
+    const alienRegistrationNumber = document.getElementById('alienRegistrationNumber').value;
+    const signature = document.getElementById('signature').value;
+    const signatureDate = document.getElementById('signatureDate').value;
+
+    if (!existingPdfBytes) {
+        alert("Please upload a PDF form first.");
+        return;
+    }
+
+    try {
+        const { PDFDocument } = PDFLib;
+        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+        const form = pdfDoc.getForm();
+
+        // Helper function to trim text to a specified length
+        const trimText = (text, maxLength) => {
+            return text.length > maxLength ? text.substring(0, maxLength) : text;
+        };
+
+        // Fill the form fields only if they are not empty
+        if (lastName) form.getTextField('lastName').setText(trimText(lastName, 30));
+        if (firstName) form.getTextField('firstName').setText(trimText(firstName, 30));
+        if (middleInitial) form.getTextField('middleInitial').setText(trimText(middleInitial, 1));
+        if (otherLastNames) form.getTextField('otherLastNames').setText(trimText(otherLastNames, 30));
+        if (streetAddress) form.getTextField('streetAddress').setText(trimText(streetAddress, 50));
+        if (aptNumber) form.getTextField('aptNumber').setText(trimText(aptNumber, 10));
+        if (city) form.getTextField('city').setText(trimText(city, 30));
+        if (state) form.getTextField('state').setText(trimText(state, 2));
+        if (zipCode) form.getTextField('zipCode').setText(trimText(zipCode, 10));
+        if (dob) form.getTextField('dob').setText(trimText(dob, 10));
+        if (ssn) form.getTextField('ssn').setText(trimText(ssn, 11));
+        if (email) form.getTextField('email').setText(trimText(email, 50));
+        if (phone) form.getTextField('phone').setText(trimText(phone, 15));
+
+        // Handle citizenship radio buttons
+        const citizenshipGroup = form.getRadioGroup('citizenship'); // Убедитесь, что имя группы совпадает с PDF
+
+        if (citizenship === 'citizen') {
+            citizenshipGroup.select('citizen'); // Выбрать опцию "citizen"
+        } else if (citizenship === 'nonCitizenNational') {
+            citizenshipGroup.select('nonCitizenNational'); // Выбрать опцию "nonCitizenNational"
+        } else if (citizenship === 'lawfulPermanentResident') {
+            citizenshipGroup.select('lawfulPermanentResident'); // Выбрать опцию "lawfulPermanentResident"
+        } else if (citizenship === 'alienAuthorized') {
+            citizenshipGroup.select('alienAuthorized'); // Выбрать опцию "alienAuthorized"
+        }
+
+        if (alienExpirationDate) form.getTextField('alienExpirationDate').setText(trimText(alienExpirationDate, 10));
+        if (alienRegistrationNumber) form.getTextField('alienRegistrationNumber').setText(trimText(alienRegistrationNumber, 20));
+        if (signature) form.getTextField('signature').setText(trimText(signature, 50));
+        if (signatureDate) form.getTextField('signatureDate').setText(trimText(signatureDate, 10));
+
+        filledPdfBytes = await pdfDoc.save();
+
+        // Display the filled PDF in the iframe
+        const blob = new Blob([filledPdfBytes], { type: 'application/pdf' });
+        const pdfUrl = URL.createObjectURL(blob);
+        document.getElementById('pdf-preview').src = pdfUrl;
+    } catch (error) {
+        console.error("Error filling the form:", error);
+        alert("Failed to fill the form. Ensure the PDF has the correct fields.");
+    }
+}
+        // Function to save the filled PDF
+        function savePDF() {
+            if (!filledPdfBytes) {
+                alert("Please generate the filled PDF first.");
+                return;
+            }
+
+            // Create Blob from filled PDF bytes
+            const blob = new Blob([filledPdfBytes], { type: 'application/pdf' });
+
+            // Create a download link for the filled PDF
+            const downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = 'filled_form.pdf';  // Default filename
+            downloadLink.click();  // Trigger the download
+        }
+
+        // Function to print the PDF
+        function printPDF() {
+            const iframe = document.getElementById('pdf-preview');
+            if (iframe.src === "about:blank") {
+                alert("Please generate or upload a PDF first.");
+                return;
+            }
+
+            // Open the PDF in a new tab and print it
+            const newWindow = window.open(iframe.src, '_blank');
+            newWindow.onload = function() {
+                newWindow.print();
+            };
+        }
+
+
+        // Automatically load a PDF file on page load
+        async function fillForm() {
+            const formUrl = 'https://rawcdn.githack.com/Alex-Pas/PDF_Blanks/bf30ec74f34ba011d1f70dd292d1d1307a818ee4/blank_i9.pdf';
+            try {
+                const formPdfBytes = await fetch(formUrl).then(res => res.arrayBuffer());
+                existingPdfBytes = new Uint8Array(formPdfBytes);
+
+                // Display the PDF in the iframe
+                const blob = new Blob([existingPdfBytes], { type: 'application/pdf' });
+                const pdfUrl = URL.createObjectURL(blob);
+                document.getElementById('pdf-preview').src = pdfUrl;
+            } catch (error) {
+                console.error("Error loading default PDF:", error);
+                alert("Failed to load default PDF.");
+            }
+        }
+
+        // Call fillForm on page load
+        window.onload = fillForm;
+    </script>
+</body>
+</html>
